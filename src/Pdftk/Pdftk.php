@@ -1,6 +1,9 @@
 <?php
-namespace Pdftk;
-use Pdftk\File\Input;
+/**
+ * Turning off namespace usage since it will complicate autoload unnecessarily
+ * namespace Pdftk;
+ * use Pdftk\File\Input;
+ */
 /**
  * @author Ben Squire <b.squire@gmail.com>
  * @license Apache 2.0
@@ -34,12 +37,12 @@ class Pdftk
 {
     const VERSION = '1.2';
 
-    protected $sBinary = '/usr/local/bin/pdftk';
+    protected $sBinary = '/usr/bin/pdftk';
     protected $aInputFiles = null;
     protected $sOutputFilename = null;
     protected $bVerbose = false;
     protected $bAskMode = false;
-    protected $bCompress = true;
+    protected $bCompress = false;
     protected $sOwnerPassword = null;
     protected $sUserPassword = null;
     protected $iEncryption = 128;
@@ -305,10 +308,10 @@ class Pdftk
      */
     public function setInputFile($aParams = array())
     {
-        if ($aParams instanceof Input) {
+        if ($aParams instanceof File_Input) {
             $this->aInputFiles[] = $aParams;
         } else {
-            $this->aInputFiles[] = new Input($aParams);
+            $this->aInputFiles[] = new File_Input($aParams);
         }
 
         return $this;
@@ -343,12 +346,15 @@ class Pdftk
                 $aCommand[] = "-";
                 $this->sInputData = $iKey;
             } else {
+                /* DEV-3832 Some complications with the file handles, disabling
                 if ($this->getPdftkVersion() >= 1.45) {
                     $handle = chr(65 + floor($iKey / 26) % 26) . chr(65 + $iKey % 26);
                 } else {
                     $handle = chr(65 + $iKey);
                 }
                 $aCommand[] = $handle . '=' . escapeshellarg($oFile->getFilename());
+                */
+                $aCommand[] = escapeshellarg($oFile->getFilename());
             }
         }
 
@@ -373,6 +379,7 @@ class Pdftk
         // TODO: PDFTK Capable of much more functionality, extend here.
         $aCommand[] = 'cat';
 
+        /* DEV-3832 Some complications with the file handles, disabling
         //Fetch command for each input file
         if ($total_inputs > 0) {
             foreach ($this->aInputFiles as $iKey => $oFile) {
@@ -384,6 +391,7 @@ class Pdftk
                 $aCommand[] = $handle . $oFile->_getCatCommand();
             }
         }
+        */
 
         //Output file params
         $aCommand[] = 'output';

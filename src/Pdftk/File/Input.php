@@ -1,11 +1,15 @@
 <?php
-namespace Pdftk\File;
+
+/**
+ * Turning off namespace usage since it will complicate autoload unnecessarily
+ * namespace Pdftk\File;
+ */
 
 /**
  * Class Input
  * @package Pdftk\File
  */
-class Input
+class File_Input
 {
     protected $aRotations = array(0 => 'north', 90 => 'east', 180 => 'south', 270 => 'west');
     protected $sInputFilename = null; //File to read in
